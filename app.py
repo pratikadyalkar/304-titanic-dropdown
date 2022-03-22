@@ -31,7 +31,7 @@ app.title=tabtitle
 
 ####### Layout of the app ########
 app.layout = html.Div([
-    html.H3(id='display-value'),
+    html.H3('ll'),
     dcc.Dropdown(
         id='dropdown',
         options=[{'label': i, 'value': j} for i,j in zip(labels,values)],
@@ -42,14 +42,12 @@ app.layout = html.Div([
     html.A('Code on Github', href=githublink),
     html.Br(),
     html.A("Data Source", href=sourceurl),
+    html.Div(id='display-value')
 ])
 
-@app.callback(Output('output', 'children'), Input('dropdown', 'value'))
-def display_output(value):
-    return f'You have selected "{value}"'
 
 ######### Interactive callbacks go here #########
-@app.callback(Output('display-value', 'figure'),
+@app.callback(Output('display-value', 'children'),
               [Input('dropdown', 'value')])
 def display_value(continuous_var):
     # print(continuous_var)
@@ -84,7 +82,7 @@ def display_value(continuous_var):
 #     fig = go.Figure(layout=mylayout)
 #     return fig
 
-    return f'You have selected "{value}"'
+    return f'You have selected "{continuous_var}"'
 
 
 ######### Run the app #########
