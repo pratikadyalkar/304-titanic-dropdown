@@ -84,7 +84,7 @@ def display_value(continuous_var):
 #     fig = go.Figure(layout=mylayout)
 #     return fig
 
-    return f'You have selected "{value}"'
+    return f'You have selected "{continuous_var}"'
 
 
 ######### Run the app #########
