@@ -18,11 +18,14 @@ githublink = 'https://github.com/plotly-dash-apps/304-titanic-dropdown'
 
 
 ###### Import a dataframe #######
-df = pd.read_csv("https://raw.githubusercontent.com/austinlasseter/plotly_dash_tutorial/master/00%20resources/titanic.csv")
-df['Female']=df['Sex'].map({'male':0, 'female':1})
-df['Cabin Class'] = df['Pclass'].map({1:'first', 2: 'second', 3:'third'})
-variables_list=['Survived', 'Female', 'Fare', 'Age']
-
+df = pd.read_csv('assets/football.csv')
+#df['Female']=df['Sex'].map({'male':0, 'female':1})
+#df['Cabin Class'] = df['Pclass'].map({1:'first', 2: 'second', 3:'third'})
+labels=['Most home goals', 'Most away goals', 'Top 10 city hosting tournaments', 'Top 10 countries hosting tournaments']
+values=[{'groubyby':'home_team','column':'home_score', 'function':'sum()'},
+       {'groubyby':'away_team','column':'away_score', 'function':'sum()'},
+       {'groubyby':'city','column':'tournament', 'function':'count()'},
+       {'groubyby':'country','column':'tournament', 'function':'count()'}]
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -31,17 +34,18 @@ app.title=tabtitle
 
 ####### Layout of the app ########
 app.layout = html.Div([
-    html.H3('Choose a continuous variable for summary statistics:'),
+    html.H3('Football Tournaments around the world'),
     dcc.Dropdown(
         id='dropdown',
-        options=[{'label': i, 'value': i} for i in variables_list],
-        value=variables_list[0]
+        options=[{'label': j, 'value': i} for i,j in enumerate(labels)],
+        value=values[0],
+        placeholder="Select a filter",
     ),
     html.Br(),
     dcc.Graph(id='display-value'),
     html.A('Code on Github', href=githublink),
     html.Br(),
-    html.A("Data Source", href=sourceurl),
+    html.A("Data Source", href=sourceurl)
 ])
 
 
@@ -49,36 +53,37 @@ app.layout = html.Div([
 @app.callback(Output('display-value', 'figure'),
               [Input('dropdown', 'value')])
 def display_value(continuous_var):
-    grouped_mean=df.groupby(['Cabin Class', 'Embarked'])[continuous_var].mean()
+    print(continuous_var)
+    dicj = values[continuous_var]
+    grouped_mean=eval('df.groupby("{0}").{2}.sort_values(by="{1}", ascending=False).head(10)'.format(dicj['groubyby'],dicj['column'],dicj['function']))
     results=pd.DataFrame(grouped_mean)
-    # Create a grouped bar chart
+    # # Create a grouped bar chart
     mydata1 = go.Bar(
-        x=results.loc['first'].index,
-        y=results.loc['first'][continuous_var],
-        name='First Class',
-        marker=dict(color=color1)
+        x=results[dicj['column']],
+        y=results[dicj['groupby']],
     )
-    mydata2 = go.Bar(
-        x=results.loc['second'].index,
-        y=results.loc['second'][continuous_var],
-        name='Second Class',
-        marker=dict(color=color2)
-    )
-    mydata3 = go.Bar(
-        x=results.loc['third'].index,
-        y=results.loc['third'][continuous_var],
-        name='Third Class',
-        marker=dict(color=color3)
-    )
+    # mydata2 = go.Bar(
+    #     x=results.loc['second'].index,
+    #     y=results.loc['second'][continuous_var],
+    #     name='Second Class',
+    #     marker=dict(color=color2)
+    # )
+    # mydata3 = go.Bar(
+    #     x=results.loc['third'].index,
+    #     y=results.loc['third'][continuous_var],
+    #     name='Third Class',
+    #     marker=dict(color=color3)
+    # )
 
     mylayout = go.Layout(
-        title='Grouped bar chart',
+        title= labels[continuous_var],
         xaxis = dict(title = 'Port of Embarkation'), # x-axis label
-        yaxis = dict(title = str(continuous_var)), # y-axis label
+        yaxis = dict(title = 'lol'), # y-axis label
 
     )
-    fig = go.Figure(data=[mydata1, mydata2, mydata3], layout=mylayout)
+    fig = go.Figure(layout=mylayout)
     return fig
+
 
 
 ######### Run the app #########
