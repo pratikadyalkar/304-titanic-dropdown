@@ -31,25 +31,28 @@ app.title=tabtitle
 
 ####### Layout of the app ########
 app.layout = html.Div([
-    html.H3('Choose a continuous variable for summary statistics:'),
+    html.H3(id='display-value'),
     dcc.Dropdown(
         id='dropdown',
         options=[{'label': i, 'value': j} for i,j in zip(labels,values)],
         value=values[0]
     ),
     html.Br(),
-    dcc.Graph(id='display-value'),
+    #dcc.Graph(id='display-value'),
     html.A('Code on Github', href=githublink),
     html.Br(),
     html.A("Data Source", href=sourceurl),
 ])
 
+@app.callback(Output('output', 'children'), Input('dropdown', 'value'))
+def display_output(value):
+    return f'You have selected "{value}"'
 
 ######### Interactive callbacks go here #########
 @app.callback(Output('display-value', 'figure'),
               [Input('dropdown', 'value')])
 def display_value(continuous_var):
-    
+    # print(continuous_var)
     # grouped_mean=df.groupby(['Cabin Class', 'Embarked'])[continuous_var].mean()
     # results=pd.DataFrame(grouped_mean)
     # # Create a grouped bar chart
@@ -72,14 +75,16 @@ def display_value(continuous_var):
     #     marker=dict(color=color3)
     # )
 
-    mylayout = go.Layout(
-        title= continuous_var,
-        xaxis = dict(title = 'Port of Embarkation'), # x-axis label
-        yaxis = dict(title = 'lol'), # y-axis label
+#     mylayout = go.Layout(
+#         title= continuous_var,
+#         xaxis = dict(title = 'Port of Embarkation'), # x-axis label
+#         yaxis = dict(title = 'lol'), # y-axis label
 
-    )
-    fig = go.Figure(layout=mylayout)
-    return fig
+#     )
+#     fig = go.Figure(layout=mylayout)
+#     return fig
+
+    return f'You have selected "{value}"'
 
 
 ######### Run the app #########
