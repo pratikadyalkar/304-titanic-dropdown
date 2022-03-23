@@ -22,10 +22,10 @@ df = pd.read_csv('assets/football.csv')
 #df['Female']=df['Sex'].map({'male':0, 'female':1})
 #df['Cabin Class'] = df['Pclass'].map({1:'first', 2: 'second', 3:'third'})
 labels=['Most home goals', 'Most away goals', 'Top 10 city hosting tournaments', 'Top 10 countries hosting tournaments']
-values=[{'groubyby':'home_team','column':'home_score', 'function':'sum()'},
-       {'groubyby':'away_team','column':'away_score', 'function':'sum()'},
-       {'groubyby':'city','column':'tournament', 'function':'count()'},
-       {'groubyby':'country','column':'tournament', 'function':'count()'}]
+values=[{'groupby':'home_team','column':'home_score', 'function':'sum()'},
+       {'groupby':'away_team','column':'away_score', 'function':'sum()'},
+       {'groupby':'city','column':'tournament', 'function':'count()'},
+       {'groupby':'country','column':'tournament', 'function':'count()'}]
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -55,7 +55,7 @@ app.layout = html.Div([
 def display_value(continuous_var):
     print(continuous_var)
     dicj = values[continuous_var]
-    grouped_mean=eval('df.groupby("{0}").{2}.sort_values(by="{1}", ascending=False).head(10)'.format(dicj['groubyby'],dicj['column'],dicj['function']))
+    grouped_mean=eval('df.groupby("{0}").{2}.sort_values(by="{1}", ascending=False).head(10)'.format(dicj['groupby'],dicj['column'],dicj['function']))
     results=pd.DataFrame(grouped_mean)
     # # Create a grouped bar chart
     mydata1 = go.Bar(
