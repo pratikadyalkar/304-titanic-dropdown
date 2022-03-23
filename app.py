@@ -13,8 +13,8 @@ tabtitle = 'Titanic!'
 color1='#92A5E8'
 color2='#8E44AD'
 color3='#FFC300'
-sourceurl = 'https://www.kaggle.com/c/titanic'
-githublink = 'https://github.com/plotly-dash-apps/304-titanic-dropdown'
+#sourceurl = 'https://www.kaggle.com/c/titanic'
+githublink = 'https://github.com/pratikadyalkar/304-titanic-dropdown'
 
 
 ###### Import a dataframe #######
@@ -42,9 +42,12 @@ app.layout = html.Div([
     ),
     html.Br(),
     dcc.Graph(id='display-value'),
-    html.A('Code on Github', href=githublink),
+    html.P('''The dataset contains football tournament data. It includes data ranging from date 1872-11-30 to 2018-07-10.
+    102 different tournaments are hosted by 265 countries in 1874 cities across the globe over the period of time. '''),
     html.Br(),
-    html.A("Data Source", href=sourceurl)
+    html.A('Code on Github', href=githublink),
+    #html.Br(),
+    #html.A("Data Source", href=sourceurl)
 ])
 
 
