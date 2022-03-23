@@ -38,7 +38,6 @@ app.layout = html.Div([
     dcc.Dropdown(
         id='dropdown',
         options=[{'label': j, 'value': i} for i,j in enumerate(labels)],
-        value=values[0],
         placeholder="Select a filter",
     ),
     html.Br(),
@@ -56,11 +55,11 @@ def display_value(continuous_var):
     print(continuous_var)
     dicj = values[continuous_var]
     grouped_mean=eval('df.groupby("{0}").{2}.sort_values(by="{1}", ascending=False).head(10)'.format(dicj['groupby'],dicj['column'],dicj['function']))
-    results=pd.DataFrame(grouped_mean)
+    results=pd.DataFrame(grouped_mean).reset_index()
     # # Create a grouped bar chart
     mydata1 = go.Bar(
-        x=results[dicj['column']],
-        y=results[dicj['groupby']],
+        x=results[dicj['groupby']],
+        y=results[dicj['column']],
     )
     # mydata2 = go.Bar(
     #     x=results.loc['second'].index,
@@ -77,11 +76,11 @@ def display_value(continuous_var):
 
     mylayout = go.Layout(
         title= labels[continuous_var],
-        xaxis = dict(title = 'Port of Embarkation'), # x-axis label
-        yaxis = dict(title = 'lol'), # y-axis label
+        xaxis = dict(title = dicj['groupby']), # x-axis label
+        yaxis = dict(title = dicj['column']), # y-axis label
 
     )
-    fig = go.Figure(layout=mylayout)
+    fig = go.Figure(data=mydata1, layout=mylayout)
     return fig
 
 
